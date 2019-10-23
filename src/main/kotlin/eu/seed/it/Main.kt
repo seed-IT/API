@@ -4,10 +4,18 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import java.io.File
 
 
+lateinit var serverConnection: Connection
+lateinit var databaseConnection: Connection
+lateinit var database: Database
+lateinit var server: Server
+
 fun main(args: Array<String>) {
     println("Hello..")
 
     loadConfig()
+
+    database = Database(databaseConnection)
+    server = Server(serverConnection)
 }
 
 fun loadConfig() {
@@ -23,11 +31,11 @@ fun loadConfig() {
 
     val serverAddress = conf.getOrElse("server.address", "127.0.0.1")
     val serverPort = conf.getIntOrElse("server.port", 4000)
-    val serverConnection = Connection(serverAddress, serverPort)
+    serverConnection = Connection(serverAddress, serverPort)
 
     val databaseAddress = conf.getOrElse("database.address", "127.0.0.1")
     val databasePort = conf.getIntOrElse("database.port", 3306)
-    val databaseConnection = Connection(databaseAddress, databasePort)
+    databaseConnection = Connection(databaseAddress, databasePort)
 
     println(serverConnection)
     println(databaseConnection)
