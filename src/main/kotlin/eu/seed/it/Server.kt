@@ -23,7 +23,9 @@ class Server(private val connection: Connection, private val database: Database)
         logger.info("Listening on $connection")
         port(connection.port)
 
-        get("/seeds") { _, _ ->
+        get("/seeds") { _, res ->
+            res.type("application/json")
+
             val seeds = database.seeds()
             mapper.writeValueAsString(seeds);
         }
