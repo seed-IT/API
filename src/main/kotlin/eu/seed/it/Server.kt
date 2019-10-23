@@ -10,8 +10,14 @@ class Server(private val connection: Connection, private val database: Database)
     fun serve() {
         logger.info("Listening on $connection")
         port(connection.port)
+
         get("/seeds") { _, _ ->
             database.seeds().joinToString(", ")
+        }
+
+        notFound { _, res ->
+            res.type("application/json")
+            "{\"message\":\"404\"}"
         }
 
     }
