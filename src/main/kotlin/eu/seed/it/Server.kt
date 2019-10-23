@@ -27,7 +27,7 @@ class Server(private val connection: Connection, private val database: Database)
             res.type("application/json")
 
             val seeds = database.seeds()
-            mapper.writeValueAsString(seeds);
+            mapper.writeValueAsString(seeds)
         }
 
         notFound { _, res ->

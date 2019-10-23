@@ -10,9 +10,9 @@ lateinit var databaseConnection: Connection
 lateinit var database: Database
 lateinit var server: Server
 
-var logger = LoggerFactory.getLogger("API")
+var logger = LoggerFactory.getLogger("API")!!
 
-fun main(args: Array<String>) {
+fun main() {
     logger.info("Starting API service")
 
     loadConfig()
@@ -48,6 +48,6 @@ fun loadConfig() {
 
 data class Connection(val address: String, val port: Int) {
     override fun toString(): String {
-        return "Connection('$address:$port')"
+        return "$address:$port"
     }
 }
