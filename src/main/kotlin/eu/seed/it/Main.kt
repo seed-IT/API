@@ -17,9 +17,9 @@ fun main(args: Array<String>) {
 
     loadConfig()
 
-    database = Database(databaseConnection)
+    database = DummyDatabase(databaseConnection)
 
-    server = Server(serverConnection)
+    server = Server(serverConnection, database)
     server.serve()
 }
 
