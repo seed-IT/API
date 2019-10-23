@@ -1,6 +1,7 @@
 package eu.seed.it
 
 import com.electronwill.nightconfig.core.file.FileConfig
+import org.slf4j.LoggerFactory
 import java.io.File
 
 
@@ -9,13 +10,17 @@ lateinit var databaseConnection: Connection
 lateinit var database: Database
 lateinit var server: Server
 
+var logger = LoggerFactory.getLogger("API")
+
 fun main(args: Array<String>) {
-    println("Hello..")
+    logger.info("Starting API service")
 
     loadConfig()
 
-    database = Database(databaseConnection)
-    server = Server(serverConnection)
+    database = DummyDatabase(databaseConnection)
+
+    server = Server(serverConnection, database)
+    server.serve()
 }
 
 fun loadConfig() {
@@ -41,4 +46,8 @@ fun loadConfig() {
     println(databaseConnection)
 }
 
-data class Connection(val address: String, val port: Int)
+data class Connection(val address: String, val port: Int) {
+    override fun toString(): String {
+        return "Connection('$address:$port')"
+    }
+}
