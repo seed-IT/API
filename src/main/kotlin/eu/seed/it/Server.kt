@@ -28,10 +28,20 @@ class Server(private val connection: Connection, private val database: Database)
             mapper.writeValueAsString(seeds)
         }
 
+        get("/seed/:id") { req, res ->
+            val idParam = req.params(":id")
+            val id = idParam.toIntOrNull()
+            if (id == null) {
+                res.status(400)
+                message("400", mapper)
+            } else {
+                val seed = database.seed(id)
+                mapper.writeValueAsString(seed)
+            }
+        }
+
         notFound { _, _ ->
-            val objectNode = mapper.createObjectNode()
-            objectNode.put("msg", "404")
-            objectNode.toString()
+            message("404", mapper)
         }
 
         after(Filter { _, res ->
@@ -40,4 +50,10 @@ class Server(private val connection: Connection, private val database: Database)
         })
 
     }
+}
+
+fun message(message: String, mapper: ObjectMapper): String {
+    val objectNode = mapper.createObjectNode()
+    objectNode.put("message", message)
+    return objectNode.toString()
 }
