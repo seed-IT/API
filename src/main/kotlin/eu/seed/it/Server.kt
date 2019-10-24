@@ -5,14 +5,13 @@ import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import spark.Filter
 import spark.Spark.*
 
 
 class Server(private val connection: Connection, private val database: Database) {
-    private val logger: Logger = LoggerFactory.getLogger("Server")
+    private val logger = LoggerFactory.getLogger("Server")
     private val mapper = ObjectMapper().registerModule(KotlinModule())
 
     init {
@@ -35,12 +34,10 @@ class Server(private val connection: Connection, private val database: Database)
             objectNode.toString()
         }
 
-        val gzipFilter = Filter { _, res ->
+        after(Filter { _, res ->
             res.header("Content-Encoding", "gzip")
             res.type("application/json")
-        }
-
-        after(gzipFilter)
+        })
 
     }
 }
