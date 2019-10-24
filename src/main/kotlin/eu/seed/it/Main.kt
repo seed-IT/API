@@ -3,6 +3,7 @@ package eu.seed.it
 import com.electronwill.nightconfig.core.file.FileConfig
 import org.slf4j.LoggerFactory
 import java.io.File
+import kotlin.system.exitProcess
 
 
 lateinit var serverConnection: Connection
@@ -38,9 +39,19 @@ fun loadConfig() {
     val serverPort = conf.getIntOrElse("server.port", 4000)
     serverConnection = Connection(serverAddress, serverPort)
 
+    if(!serverConnection.validate()){
+        System.err.println("Port out of range ${serverConnection.port}")
+        exitProcess(1)
+    }
+
     val databaseAddress = conf.getOrElse("database.address", "127.0.0.1")
     val databasePort = conf.getIntOrElse("database.port", 3306)
     databaseConnection = Connection(databaseAddress, databasePort)
+
+    if(!databaseConnection.validate()){
+        System.err.println("Port out of range ${databaseConnection.port}")
+        exitProcess(1)
+    }
 
     println(serverConnection)
     println(databaseConnection)
