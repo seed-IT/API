@@ -36,7 +36,12 @@ class Server(private val connection: Connection, private val database: Database)
                 message("400", mapper)
             } else {
                 val seed = database.seed(id)
-                mapper.writeValueAsString(seed)
+                if (seed == null) {
+                    res.status(404)
+                    message("Seed not found", mapper)
+                } else {
+                    mapper.writeValueAsString(seed)
+                }
             }
         }
 
