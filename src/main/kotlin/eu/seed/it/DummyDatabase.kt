@@ -1,6 +1,5 @@
 package eu.seed.it
 
-import eu.seed.it.mappings.Seed
 import org.slf4j.LoggerFactory
 
 class DummyDatabase(private val connection: Connection) : Database {

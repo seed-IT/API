@@ -1,4 +1,4 @@
-package eu.seed.it.mappings
+package eu.seed.it
 
 import java.time.LocalDate
 

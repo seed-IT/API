@@ -1,10 +1,5 @@
 package eu.seed.it
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect
-import com.fasterxml.jackson.annotation.PropertyAccessor
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.slf4j.LoggerFactory
 import spark.Filter
 import spark.Spark.*
@@ -12,12 +7,6 @@ import spark.Spark.*
 
 class Server(private val connection: Connection, private val database: Database) {
     private val logger = LoggerFactory.getLogger("Server")
-    private val mapper = ObjectMapper().registerModule(KotlinModule())
-
-    init {
-        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-        mapper.enable(SerializationFeature.INDENT_OUTPUT)
-    }
 
     fun serve() {
         logger.info("Listening on $connection")
@@ -33,12 +22,12 @@ class Server(private val connection: Connection, private val database: Database)
             val id = idParam.toIntOrNull()
             if (id == null) {
                 res.status(400)
-                message("400", mapper)
+                message("400")
             } else {
                 val seed = database.seed(id)
                 if (seed == null) {
                     res.status(404)
-                    message("Seed not found", mapper)
+                    message("Seed not found")
                 } else {
                     mapper.writeValueAsString(seed)
                 }
@@ -46,7 +35,7 @@ class Server(private val connection: Connection, private val database: Database)
         }
 
         notFound { _, _ ->
-            message("404", mapper)
+            message("404")
         }
 
         after(Filter { _, res ->
@@ -57,7 +46,7 @@ class Server(private val connection: Connection, private val database: Database)
     }
 }
 
-fun message(message: String, mapper: ObjectMapper): String {
+fun message(message: String): String {
     val objectNode = mapper.createObjectNode()
     objectNode.put("message", message)
     return objectNode.toString()
