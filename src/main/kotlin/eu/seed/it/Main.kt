@@ -39,8 +39,8 @@ fun loadConfig() {
     val serverPort = conf.getIntOrElse("server.port", 4000)
     serverConnection = Connection(serverAddress, serverPort)
 
-    if(!serverConnection.validate()){
-        System.err.println("Port out of range ${serverConnection.port}")
+    if (!serverConnection.validate()) {
+        logger.error("Port out of range ${serverConnection.port}")
         exitProcess(1)
     }
 
@@ -48,13 +48,14 @@ fun loadConfig() {
     val databasePort = conf.getIntOrElse("database.port", 3306)
     databaseConnection = Connection(databaseAddress, databasePort)
 
-    if(!databaseConnection.validate()){
-        System.err.println("Port out of range ${databaseConnection.port}")
+    if (!databaseConnection.validate()) {
+        logger.error("Port out of range ${databaseConnection.port}")
         exitProcess(1)
     }
 
-    println(serverConnection)
-    println(databaseConnection)
+    logger.info("Using server connection $serverConnection")
+    logger.info("Using database connection $databaseConnection")
+
 }
 
 data class Connection(val address: String, val port: Int) {
