@@ -13,6 +13,15 @@ class Server(private val connection: Connection, private val database: Database)
         logger.info("Listening on $connection")
         port(connection.port)
 
+        before(Filter { req, res ->
+            val url = req.url()
+            if (url.endsWith('/')) {
+                val newUrl = url.substring(0 until url.length - 1)
+                logger.info("Redirecting from $url to $newUrl")
+                res.redirect(newUrl)
+            }
+        })
+
         get("/seeds") { _, _ ->
             val seeds = database.seeds()
             mapper.writeValueAsString(seeds)
