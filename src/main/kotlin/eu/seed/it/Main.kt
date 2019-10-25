@@ -2,9 +2,8 @@ package eu.seed.it
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -15,7 +14,7 @@ lateinit var database: Database
 lateinit var server: Server
 
 var logger = LoggerFactory.getLogger("API")!!
-val mapper = ObjectMapper().registerModule(KotlinModule())!!
+val mapper = jacksonObjectMapper()
 
 fun main() {
     logger.info("Starting API service")
