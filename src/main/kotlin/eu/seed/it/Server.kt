@@ -1,5 +1,6 @@
 package eu.seed.it
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.slf4j.LoggerFactory
 import spark.Filter
 import spark.Spark.*
@@ -34,6 +35,29 @@ class Server(private val connection: Connection, private val database: Database)
             }
         }
 
+        post("/seed") { req, res ->
+            val json = req.body()
+            logger.info(json)
+            when (val seed = seedFromJson(json)) {
+                is Either.Left -> {
+                    // TODO
+                    res.status(400)
+                    return@post message("Something happened..")
+                }
+                is Either.Right -> {
+                    val success = database.addSeed(seed.value)
+                    if (success) {
+                        res.status(201)
+                        return@post message("Inserted seed")
+                    } else {
+                        res.status(400)
+                        // TODO: find what
+                        return@post message("Something happened..")
+                    }
+                }
+            }
+        }
+
         notFound { _, _ ->
             message("404")
         }
@@ -44,6 +68,16 @@ class Server(private val connection: Connection, private val database: Database)
         })
 
     }
+}
+
+fun seedFromJson(json: String): Either<Exception, Seed> {
+    lateinit var seed: Seed
+    try {
+        seed = mapper.readValue(json)
+    } catch (e: java.lang.Exception) {
+        return Either.Left(e)
+    }
+    return Either.Right(seed)
 }
 
 fun message(message: String): String {

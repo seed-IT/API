@@ -3,7 +3,7 @@ package eu.seed.it
 import java.time.LocalDate
 
 data class Seed(
-        val id: Int,
+        val id: Int? = null,
         val name: String,
         val description: String,
         val tips: String? = null
