@@ -8,4 +8,6 @@ interface Database {
     fun seeds(): List<Seed>
 
     fun seed(id: Int): Seed?
+
+    fun addSeed(seed: Seed): Boolean
 }
