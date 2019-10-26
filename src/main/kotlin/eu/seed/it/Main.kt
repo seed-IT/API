@@ -2,6 +2,7 @@ package eu.seed.it
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
@@ -9,12 +10,16 @@ import java.io.File
 
 
 lateinit var serverConnection: Connection
-lateinit var databaseConnection: Connection
+lateinit var databaseConnection: DatabaseConnection
 lateinit var database: Database
 lateinit var server: Server
 
 var logger = LoggerFactory.getLogger("API")!!
-val mapper = jacksonObjectMapper()
+
+val mapper: ObjectMapper = jacksonObjectMapper().findAndRegisterModules().apply {
+    setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+    enable(SerializationFeature.INDENT_OUTPUT)
+}
 
 fun main() {
     logger.info("Starting API service")
@@ -28,10 +33,7 @@ fun main() {
     logger.info("Using server connection $serverConnection")
     logger.info("Using database connection $databaseConnection")
 
-    mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-    mapper.enable(SerializationFeature.INDENT_OUTPUT)
-
-    database = DummyDatabase(databaseConnection)
+    database = RealDatabase(databaseConnection)
 
     server = Server(serverConnection, database)
     server.serve()
