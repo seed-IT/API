@@ -5,15 +5,15 @@ import me.liuwj.ktorm.dsl.select
 import eu.seed.it.Database as Database1
 
 
-class RealDatabase(private val connection: Connection) : Database1 {
+class RealDatabase(private val connection: DatabaseConnection) : Database1 {
     override fun connect() {
-        val url = "jdbc:mariadb://${connection.address}:${connection.port}/seeds"
+        val url = "jdbc:mariadb://${connection.address}:${connection.port.value}/${connection.name}"
 
         Database.connect(
                 url = url,
                 driver = "org.mariadb.jdbc.Driver",
-                user = "seeds",
-                password = "tortue"
+                user = connection.user,
+                password = connection.password
         )
 
         Seeds.select()

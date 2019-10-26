@@ -9,7 +9,7 @@ import java.io.File
 
 
 lateinit var serverConnection: Connection
-lateinit var databaseConnection: Connection
+lateinit var databaseConnection: DatabaseConnection
 lateinit var database: Database
 lateinit var server: Server
 

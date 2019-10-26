@@ -1,6 +1,9 @@
 [database]
 address = "127.0.0.1"
 port = 3306
+name = "seeds"
+user = "seeds"
+password = "not this one.."
 
 [server]
 address = "127.0.0.1"

@@ -14,7 +14,7 @@ class Server(private val connection: Connection, private val database: Database)
         database.connect()
 
         logger.info("Listening on $connection")
-        port(connection.port)
+        port(connection.port.value)
 
         before(Filter { req, res ->
             val url = req.url()

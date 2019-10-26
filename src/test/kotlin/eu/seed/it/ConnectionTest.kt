@@ -8,20 +8,20 @@ class ServerTest {
 
     @Test
     fun `port in range`() {
-        val connection = Connection("localhost", 3306)
-        assertTrue(connection.validate())
+        val port = Port(3306)
+        assertTrue(port.validate())
     }
 
     @Test
     fun `port out of range (negative)`() {
-        val connection = Connection("localhost", -29292)
-        assertFalse(connection.validate())
+        val port = Port(-29292)
+        assertFalse(port.validate())
     }
 
     @Test
     fun `port out of range (too big)`() {
-        val connection = Connection("localhost", 100000)
-        assertFalse(connection.validate())
+        val port = Port(100000)
+        assertFalse(port.validate())
     }
 
 }
