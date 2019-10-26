@@ -31,7 +31,7 @@ fun main() {
     mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
     mapper.enable(SerializationFeature.INDENT_OUTPUT)
 
-    database = DummyDatabase(databaseConnection)
+    database = RealDatabase(databaseConnection)
 
     server = Server(serverConnection, database)
     server.serve()

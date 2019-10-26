@@ -10,6 +10,9 @@ class Server(private val connection: Connection, private val database: Database)
     private val logger = LoggerFactory.getLogger("Server")
 
     fun serve() {
+        logger.info("Connecting to database")
+        database.connect()
+
         logger.info("Listening on $connection")
         port(connection.port)
 
