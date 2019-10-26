@@ -16,23 +16,21 @@ class RealDatabase(private val connection: DatabaseConnection) : Database1 {
                 password = connection.password
         )
 
-        Seeds.select()
-                .map { row ->
-                    val name = row[Seeds.name]
-                    val description = row[Seeds.description]
-
-                    "name=$name description=$description"
-                }.forEach { logger.info(it) }
-
     }
 
     override fun disconnect() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun seeds(): List<Seed> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun seeds() = Seeds.select()
+            .map { row ->
+                Seed(
+                        id = row[Seeds.id],
+                        name = row[Seeds.name]!!,
+                        description = row[Seeds.description]!!,
+                        tips = row[Seeds.tips]
+                )
+            }
 
     override fun seed(id: Int): Seed? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
