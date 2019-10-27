@@ -22,6 +22,7 @@ object Seeds : BaseTable<Seed>("GRAINE") {
     }
 }
 
+
 // TODO: pictures
 data class Seed(
         val id: Int,

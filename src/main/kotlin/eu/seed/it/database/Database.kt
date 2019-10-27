@@ -1,5 +1,7 @@
 package eu.seed.it.database
 
+import eu.seed.it.serialization.UpdateSeedData
+
 interface Database {
     fun connect()
 
@@ -10,4 +12,6 @@ interface Database {
     fun selectSeed(id: Int): Seed?
 
     fun insertSeed(seed: Seed): Boolean
+
+    fun updateSeed(id: Int, data: UpdateSeedData): Boolean
 }

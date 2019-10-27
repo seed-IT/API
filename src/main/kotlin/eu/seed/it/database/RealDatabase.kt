@@ -1,9 +1,12 @@
 package eu.seed.it.database
 
 import eu.seed.it.DatabaseConnection
+import eu.seed.it.serialization.SeedProperty.*
+import eu.seed.it.serialization.UpdateSeedData
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insert
+import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.entity.findAll
 import me.liuwj.ktorm.entity.findOne
 import eu.seed.it.database.Database as Database1
@@ -38,5 +41,17 @@ class RealDatabase(private val connection: DatabaseConnection) : Database1 {
         }
         return rowsAffected == 1
     }
-}
 
+    override fun updateSeed(id: Int, data: UpdateSeedData): Boolean {
+        val rowsAffected = Seeds.update {
+            when (data.property) {
+                Name -> it.name to data.value
+                Description -> it.description to data.value
+                Tips -> it.tips to data.value
+            }
+            where { it.id eq id }
+        }
+        return rowsAffected == 1
+    }
+
+}

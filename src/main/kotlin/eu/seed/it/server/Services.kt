@@ -5,8 +5,10 @@ import eu.seed.it.Either.Left
 import eu.seed.it.Either.Right
 import eu.seed.it.database
 import eu.seed.it.database.Seed
+import eu.seed.it.serialization.UpdateSeedData
 import eu.seed.it.server.RequestError.Invalid
 import eu.seed.it.server.RequestsSuccess.Created
+import eu.seed.it.server.RequestsSuccess.OK
 import eu.seed.it.toObject
 import spark.Request
 
@@ -40,4 +42,24 @@ val postSeed = object : Post {
         return if (insertion) Right(Created)
         else Left(Invalid)
     }
+}
+
+val updateSeed = object : Put {
+    override fun invoke(req: Request): Either<RequestError, RequestsSuccess> {
+        val idParam = req.params(":id")
+        val id = idParam.toIntOrNull() ?: return Left(Invalid)
+
+
+        val objEither = req.body().toObject<UpdateSeedData>()
+
+
+        if (objEither is Left) return Left(Invalid)
+        objEither as Right
+        val obj = objEither.value
+
+        val updated = database.updateSeed(id, obj)
+        return if (updated) Right(OK)
+        else Left(Invalid)
+    }
+
 }

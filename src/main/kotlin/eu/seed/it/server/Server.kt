@@ -44,6 +44,20 @@ class Server(private val connection: Connection, private val database: Database)
                 "/seed" to postSeed
         ).forEach { addPost(it.first, it.second) }
 
+        put("/seeds/:id") { req, res ->
+            val updateSeed1 = updateSeed(req)
+            when (updateSeed1) {
+                is Left -> {
+                    res.status(400)
+                    return@put message("Invalid request")
+                }
+                is Right -> {
+                    res.status(200)
+                    return@put message("OK")
+                }
+            }
+
+        }
 
         notFound { _, _ ->
             message("404")
@@ -79,7 +93,7 @@ fun addPost(path: String, postHandler: Post) {
 fun handleErrors(res: Response, error: RequestError) = when (error) {
     Invalid -> {
         res.status(400)
-        message("400")
+        message("Invalid request")
     }
     NotFound -> {
         res.status(404)
