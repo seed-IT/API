@@ -3,7 +3,6 @@ package eu.seed.it.server
 import eu.seed.it.Connection
 import eu.seed.it.Either.Left
 import eu.seed.it.Either.Right
-import eu.seed.it.database
 import eu.seed.it.database.Database
 import eu.seed.it.mapper
 import eu.seed.it.server.RequestError.Invalid
@@ -61,7 +60,7 @@ class Server(private val connection: Connection, private val database: Database)
 
 fun addGet(path: String, getHandler: Get<out Any>) {
     get(path) { req, res ->
-        when (val result = getHandler(database, req)) {
+        when (val result = getHandler(req)) {
             is Right -> return@get result.value.toJson()
             is Left -> return@get handleErrors(res, result.value)
         }
@@ -70,7 +69,7 @@ fun addGet(path: String, getHandler: Get<out Any>) {
 
 fun addPost(path: String, postHandler: Post) {
     post(path) { req, res ->
-        when (val result = postHandler(database, req)) {
+        when (val result = postHandler(req)) {
             is Right -> return@post handleSuccess(res, result.value)
             is Left -> return@post handleErrors(res, result.value)
         }
