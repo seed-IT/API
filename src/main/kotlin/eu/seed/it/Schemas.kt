@@ -14,7 +14,7 @@ object Seeds : BaseTable<Seed>("GRAINE") {
 
     override fun doCreateEntity(row: QueryRowSet, withReferences: Boolean): Seed {
         return Seed(
-                id = row[id],
+                id = row[id]!!,
                 name = row[name]!!,
                 description = row[description],
                 tips = row[tips]
@@ -24,7 +24,7 @@ object Seeds : BaseTable<Seed>("GRAINE") {
 
 // TODO: pictures
 data class Seed(
-        val id: Int? = null,
+        val id: Int,
         val name: String,
         val description: String?,
         val tips: String? = null
@@ -41,7 +41,7 @@ data class Seed(
     }
 
     override fun hashCode(): Int {
-        return id ?: 0
+        return id
     }
 }
 

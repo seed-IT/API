@@ -63,16 +63,14 @@ fun addGet(path: String, getHandler: Get<out Any>) {
     }
 }
 
-fun addPost(path: String, PostHandler: Post) {
+fun addPost(path: String, postHandler: Post) {
     post(path) { req, res ->
-        when (val result = postSeed(database, req)) {
+        when (val result = postHandler(database, req)) {
             is Right -> return@post handleSuccess(res, result.value)
             is Left -> return@post handleErrors(res, result.value)
         }
     }
 }
-
-private fun Any.toJson(): String = mapper.writeValueAsString(this)
 
 fun handleErrors(res: Response, error: RequestError) = when (error) {
     Invalid -> {

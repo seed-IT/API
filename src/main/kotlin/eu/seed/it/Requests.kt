@@ -1,6 +1,5 @@
 package eu.seed.it
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import eu.seed.it.Either.Left
 import eu.seed.it.Either.Right
 import eu.seed.it.RequestError.Invalid
@@ -44,15 +43,16 @@ val getSeeds = object : Get<List<Seed>> {
 
 val postSeed = object : Post {
     override fun invoke(database: Database, req: Request): Either<RequestError, RequestsSuccess> {
-        val json = req.body()
-        lateinit var seed: Seed
-        try {
-            seed = mapper.readValue(json)
-        } catch (e: java.lang.Exception) {
+        val seedEither = req.body().toObject<Seed>()
+
+        if (seedEither is Left)
             return Left(Invalid)
-        }
+
+        seedEither as Right
+        val seed = seedEither.value
 
         val insertion = database.addSeed(seed)
+
         return if (insertion) Right(Created)
         else Left(Invalid)
     }
