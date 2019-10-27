@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import eu.seed.it.database.Database
+import eu.seed.it.database.RealDatabase
+import eu.seed.it.server.Server
 import org.slf4j.LoggerFactory
 import java.io.File
 

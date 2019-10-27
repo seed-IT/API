@@ -1,11 +1,16 @@
-package eu.seed.it
+package eu.seed.it.server
 
+import eu.seed.it.Connection
 import eu.seed.it.Either.Left
 import eu.seed.it.Either.Right
-import eu.seed.it.RequestError.Invalid
-import eu.seed.it.RequestError.NotFound
-import eu.seed.it.RequestsSuccess.Created
-import eu.seed.it.RequestsSuccess.OK
+import eu.seed.it.database
+import eu.seed.it.database.Database
+import eu.seed.it.mapper
+import eu.seed.it.server.RequestError.Invalid
+import eu.seed.it.server.RequestError.NotFound
+import eu.seed.it.server.RequestsSuccess.Created
+import eu.seed.it.server.RequestsSuccess.OK
+import eu.seed.it.toJson
 import org.slf4j.LoggerFactory
 import spark.Filter
 import spark.Response

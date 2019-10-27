@@ -1,29 +1,14 @@
-package eu.seed.it
+package eu.seed.it.server
 
+import eu.seed.it.Either
 import eu.seed.it.Either.Left
 import eu.seed.it.Either.Right
-import eu.seed.it.RequestError.Invalid
-import eu.seed.it.RequestsSuccess.Created
+import eu.seed.it.database.Database
+import eu.seed.it.database.Seed
+import eu.seed.it.server.RequestError.Invalid
+import eu.seed.it.server.RequestsSuccess.Created
+import eu.seed.it.toObject
 import spark.Request
-
-interface Get<T> {
-    operator fun invoke(database: Database, req: Request): Either<RequestError, T>
-}
-
-interface Post {
-    operator fun invoke(database: Database, req: Request): Either<RequestError, RequestsSuccess>
-}
-
-
-enum class RequestError {
-    Invalid,
-    NotFound
-}
-
-enum class RequestsSuccess {
-    OK,
-    Created
-}
 
 val getSeed = object : Get<Seed> {
     override fun invoke(database: Database, req: Request): Either<RequestError, Seed> {
@@ -45,8 +30,7 @@ val postSeed = object : Post {
     override fun invoke(database: Database, req: Request): Either<RequestError, RequestsSuccess> {
         val seedEither = req.body().toObject<Seed>()
 
-        if (seedEither is Left)
-            return Left(Invalid)
+        if (seedEither is Left) return Left(Invalid)
 
         seedEither as Right
         val seed = seedEither.value

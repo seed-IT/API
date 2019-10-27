@@ -1,4 +1,4 @@
-package eu.seed.it
+package eu.seed.it.database
 
 import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.schema.BaseTable

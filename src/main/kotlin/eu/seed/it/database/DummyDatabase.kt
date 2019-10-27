@@ -1,5 +1,6 @@
-package eu.seed.it
+package eu.seed.it.database
 
+import eu.seed.it.Connection
 import org.slf4j.LoggerFactory
 
 class DummyDatabase(private val connection: Connection) : Database {

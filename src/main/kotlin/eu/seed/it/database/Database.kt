@@ -1,4 +1,4 @@
-package eu.seed.it
+package eu.seed.it.database
 
 interface Database {
     fun connect()
