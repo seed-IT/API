@@ -3,6 +3,7 @@ package eu.seed.it.database
 import eu.seed.it.DatabaseConnection
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.eq
+import me.liuwj.ktorm.dsl.insert
 import me.liuwj.ktorm.entity.findAll
 import me.liuwj.ktorm.entity.findOne
 import eu.seed.it.database.Database as Database1
@@ -30,7 +31,12 @@ class RealDatabase(private val connection: DatabaseConnection) : Database1 {
     override fun selectSeed(id: Int) = Seeds.findOne { Seeds.id eq id }
 
     override fun insertSeed(seed: Seed): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val rowsAffected = Seeds.insert {
+            it.name to seed.name
+            it.description to seed.description
+            it.tips to seed.tips
+        }
+        return rowsAffected == 1
     }
 }
 
