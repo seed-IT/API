@@ -5,9 +5,9 @@ interface Database {
 
     fun disconnect()
 
-    fun seeds(): List<Seed>
+    fun selectSeeds(): List<Seed>
 
-    fun seed(id: Int): Seed?
+    fun selectSeed(id: Int): Seed?
 
-    fun addSeed(seed: Seed): Boolean
+    fun insertSeed(seed: Seed): Boolean
 }

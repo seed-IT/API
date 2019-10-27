@@ -25,11 +25,11 @@ class RealDatabase(private val connection: DatabaseConnection) : Database1 {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun seeds() = Seeds.findAll()
+    override fun selectSeeds() = Seeds.findAll()
 
-    override fun seed(id: Int) = Seeds.findOne { Seeds.id eq id }
+    override fun selectSeed(id: Int) = Seeds.findOne { Seeds.id eq id }
 
-    override fun addSeed(seed: Seed): Boolean {
+    override fun insertSeed(seed: Seed): Boolean {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
