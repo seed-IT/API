@@ -1,8 +1,14 @@
 package eu.seed.it
 
-import com.fasterxml.jackson.module.kotlin.readValue
+import eu.seed.it.Either.Left
+import eu.seed.it.Either.Right
+import eu.seed.it.RequestError.Invalid
+import eu.seed.it.RequestError.NotFound
+import eu.seed.it.RequestsSuccess.Created
+import eu.seed.it.RequestsSuccess.OK
 import org.slf4j.LoggerFactory
 import spark.Filter
+import spark.Response
 import spark.Spark.*
 
 
@@ -25,50 +31,15 @@ class Server(private val connection: Connection, private val database: Database)
             }
         })
 
-        get("/seeds") { _, _ ->
-            val seeds = database.seeds()
-            mapper.writeValueAsString(seeds)
-        }
+        listOf(
+                "/seeds" to getSeeds,
+                "/seed/:id" to getSeed
+        ).forEach { addGet(it.first, it.second) }
 
-        get("/seed/:id") { req, res ->
-            val idParam = req.params(":id")
-            val id = idParam.toIntOrNull()
-            if (id == null) {
-                res.status(400)
-                message("400")
-            } else {
-                val seed = database.seed(id)
-                if (seed == null) {
-                    res.status(404)
-                    message("Seed not found")
-                } else {
-                    mapper.writeValueAsString(seed)
-                }
-            }
-        }
+        listOf(
+                "/seed" to postSeed
+        ).forEach { addPost(it.first, it.second) }
 
-        post("/seed") { req, res ->
-            val json = req.body()
-            logger.info(json)
-            when (val seed = seedFromJson(json)) {
-                is Either.Left -> {
-                    // TODO
-                    res.status(400)
-                    return@post message("Something happened..")
-                }
-                is Either.Right -> {
-                    val success = database.addSeed(seed.value)
-                    if (success) {
-                        res.status(201)
-                        return@post message("Inserted seed")
-                    } else {
-                        res.status(400)
-                        // TODO: find what
-                        return@post message("Something happened..")
-                    }
-                }
-            }
-        }
 
         notFound { _, _ ->
             message("404")
@@ -82,15 +53,49 @@ class Server(private val connection: Connection, private val database: Database)
     }
 }
 
-fun seedFromJson(json: String): Either<Exception, Seed> {
-    lateinit var seed: Seed
-    try {
-        seed = mapper.readValue(json)
-    } catch (e: java.lang.Exception) {
-        return Either.Left(e)
+
+fun addGet(path: String, getHandler: Get<out Any>) {
+    get(path) { req, res ->
+        when (val result = getHandler(database, req)) {
+            is Right -> return@get result.value.toJson()
+            is Left -> return@get handleErrors(res, result.value)
+        }
     }
-    return Either.Right(seed)
 }
+
+fun addPost(path: String, PostHandler: Post) {
+    post(path) { req, res ->
+        when (val result = postSeed(database, req)) {
+            is Right -> return@post handleSuccess(res, result.value)
+            is Left -> return@post handleErrors(res, result.value)
+        }
+    }
+}
+
+private fun Any.toJson(): String = mapper.writeValueAsString(this)
+
+fun handleErrors(res: Response, error: RequestError) = when (error) {
+    Invalid -> {
+        res.status(400)
+        message("400")
+    }
+    NotFound -> {
+        res.status(404)
+        message("Item not found")
+    }
+}
+
+fun handleSuccess(res: Response, success: RequestsSuccess) = when (success) {
+    OK -> {
+        res.status(200)
+        message("OK")
+    }
+    Created -> {
+        res.status(201)
+        message("Item created")
+    }
+}
+
 
 fun message(message: String): String {
     val objectNode = mapper.createObjectNode()
