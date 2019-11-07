@@ -5,6 +5,9 @@ import eu.seed.it.Either.Left
 import eu.seed.it.Either.Right
 import eu.seed.it.database
 import eu.seed.it.database.Seed
+import eu.seed.it.database.Sensor
+import eu.seed.it.database.SensorSerializable
+import eu.seed.it.logger
 import eu.seed.it.serialization.UpdateSeedData
 import eu.seed.it.server.RequestError.Invalid
 import eu.seed.it.server.RequestsSuccess.Created
@@ -59,6 +62,29 @@ val updateSeed = object : Put {
 
         val updated = database.updateSeed(id, obj)
         return if (updated) Right(OK)
+        else Left(Invalid)
+    }
+
+}
+
+val postSensors = object : Post {
+    override fun invoke(req: Request): Either<RequestError, RequestsSuccess> {
+        val sensorEither = req.body().toObject<SensorSerializable>()
+
+        if (sensorEither is Left) return Left(Invalid)
+
+        sensorEither as Right
+        val sensor = sensorEither.value.toSensor()
+
+        if (sensor is Left) return Left(Invalid)
+
+        sensor as Right
+        val value: Sensor = sensor.value
+        logger.info(value.toString())
+
+        // TODO: insert into db
+        val success = true
+        return if (success) Right(Created)
         else Left(Invalid)
     }
 
