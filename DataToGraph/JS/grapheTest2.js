@@ -20,17 +20,9 @@ let tabData = {
         {"datetime": "29-10-2019 | 12:25", "temperature": 22.9, "humidity": 46.40}]
 };
 
-//tentative de changer de couleur lorsque la température dépasse un certain seuil
-/*var myColors=[];
-$.each(tabData, function( index,item ) {
-    if(item<10){
-        myColors[index].temperature="red";
-    }else{
-        myColors[index].temperature="green";
-    }
-});*/
 
-//fonction permettant d'aller chercher nos données grâce à la librairie fetch()
+
+//fonction permettant d'aller chercher nos données grâce à la librairie fetch()             apres   3
 /*
 function getData(){
     const reponse = await fetch("adresse");
@@ -53,6 +45,29 @@ var dataH = tabData.jsonarray.map(function(e) {
     return e.humidity;
 });
 
+
+
+//change de couleur lorsque la température dépasse un certain seuil
+var myColors=[];
+$.each(dataT, function(index, value) {
+    if(value<10){
+        myColors[index]="red";
+    }else{
+        myColors[index]='rgb(54, 179, 16)';
+    }
+});
+
+
+/*$(function(){
+    $('input[type=checkbox]').click(function(){
+        //console.log($(this).val())
+        chartData.datasets = [];
+        $('input:checked').each(function(){
+            chartData.datasets.push(chartData[$(this).val()]);
+        });
+    })
+});*/
+
                         //CHART DATA
 var chartData = {
     labels: labels,
@@ -61,11 +76,12 @@ var chartData = {
         label: 'Température',
         id: "y-axis-1",
         fill: false,
-        borderColor : 'rgb(54, 179, 16)',   //vert
+        borderColor :'rgb(54, 179, 16)',   //vert
         //pointColor: "rgba(60, 199, 18)",
-        backgroundColor: "rgba(255, 255, 255)",
-        //backgroundColor: myColors,
+        backgroundColor: myColors, //"rgba(255, 255, 255)",
         data: dataT,
+        pointRadius: 5,
+        pointHoverRadius: 4,
         //borderWidth: 1
     }, {
         type: "line",
@@ -75,9 +91,25 @@ var chartData = {
         borderColor : 'rgb(18, 112, 199)',   //bleu
         backgroundColor: "rgba(255, 255, 255)",
         data: dataH,
+        pointRadius: 5,
+        pointHoverRadius: 4,
         //borderWidth: 1
     }]
 };
+
+//essai checkboxes
+/*$(function(){
+    $.each(chartData, function(index, value){
+        //console.log($(this).val())
+        chartData.datasets = [];
+        $('input:checked').each(function(){
+            chartData.datasets.push(chartData[$(this).val()]);
+        });
+    })
+    myChart.Line(chartData, {
+        responsive: true
+    });
+});*/
 
                         //ChartJS config globale
 
@@ -115,21 +147,19 @@ var config =
         }
     }
 };
+
+
+
 var myChart = new Chart(ctx, config);
+myChart.Line(chartData, {
+    responsive: true
+});
 
 
-//IF STATEMENTS
-
-/*if(chartData.datasets[0].data < 10){
-    chartData.datasets[0].backgroundColor = 'rgb(232, 21, 28)';
-    chartData.update();
-}else{
-    chartData.datasets[0].backgroundColor = 'rgb(60, 199, 18)';
-    chartData.update();
-};*/
 
 
-/*//Function to update the chart on changing the checkbox status
+
+/*//Function to update the chart on changing the checkbox status                    2
 var updateChart = function(url, name, checked) {
 
     var index = -1;
