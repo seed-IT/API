@@ -45,6 +45,10 @@ class Server(private val connection: Connection, private val database: Database)
 
         after(Filter { _, res ->
             res.header("Content-Encoding", "gzip")
+
+            // FIXME
+            res.header("Access-Control-Allow-Origin", "*")
+
             res.type("application/json")
         })
 
