@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 
 
 class SensorSerializer : JsonSerializer<Sensor>() {
-    private val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME
+    private val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     override fun serialize(value: Sensor, gen: JsonGenerator, serializers: SerializerProvider) {
         gen.writeStartObject()
@@ -27,7 +27,7 @@ class SensorSerializer : JsonSerializer<Sensor>() {
 }
 
 class SensorDeserialiser : JsonDeserializer<Sensor>() {
-    private val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    private val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME
 
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Sensor {
         val node: JsonNode = p.codec.readTree(p)
