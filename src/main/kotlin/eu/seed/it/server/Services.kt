@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 val sensorData = CopyOnWriteArrayList<Sensor>()
 
-val postSensors = object : Post {
+val postSensor = object : Post {
     override fun invoke(req: Request): Either<RequestError, RequestsSuccess> {
         val sensorEither = req.body().toObject<Sensor>()
 
@@ -23,6 +23,12 @@ val postSensors = object : Post {
 
         sensorData.add(sensor)
         return Right(Created)
+    }
+}
+
+val getSensor = object : Get<List<Sensor>> {
+    override fun invoke(req: Request): Either<RequestError, List<Sensor>> {
+        return Right(sensorData)
     }
 
 }
