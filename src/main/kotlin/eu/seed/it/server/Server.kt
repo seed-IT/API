@@ -36,28 +36,9 @@ class Server(private val connection: Connection, private val database: Database)
         })
 
         listOf(
-                "/seeds" to getSeeds,
-                "/seed/:id" to getSeed
-        ).forEach { addGet(it.first, it.second) }
-
-        listOf(
-                "/seed" to postSeed,
                 "/sensor" to postSensors
         ).forEach { addPost(it.first, it.second) }
 
-        put("/seeds/:id") { req, res ->
-            val updateSeed1 = updateSeed(req)
-            when (updateSeed1) {
-                is Left -> {
-                    res.status(400)
-                    return@put message("Invalid request")
-                }
-                is Right -> {
-                    res.status(200)
-                    return@put message("OK")
-                }
-            }
-        }
 
         notFound { _, _ ->
             message("404")
