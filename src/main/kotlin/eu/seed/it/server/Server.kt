@@ -49,6 +49,11 @@ class Server(private val connection: Connection, private val database: Database)
             res.type("application/json")
         })
 
+        after(Filter { req, res ->
+            val log = "${req.requestMethod()} ${req.url()} ${req.body()} -> ${res.status()} ${res.body()}"
+            logger.info(log)
+        })
+
     }
 }
 
