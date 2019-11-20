@@ -73,7 +73,11 @@ val postSensors = object : Post {
         val sensorEither = req.body().toObject<Sensor>()
 
         if (sensorEither is Left) return Left(Invalid)
-        TODO()
+        sensorEither as Right
+        val sensor = sensorEither.value
+
+        sensorData.add(sensor)
+        return Right(Created)
     }
 
 }
