@@ -6,14 +6,14 @@ An API for sensor data exchange
 
 # Groups Sensor
 
-## Seed [/sensor]
+## Sensor [/sensor]
 
 ### Insert new sensor data [POST]
 
 + Request
     + Headers
 
-            Host:localhost:4000
+            Host:seed-it.eu:4000
             User-Agent:curl/7.67.0
             Accept:*/*
             Content-Type:application/json
@@ -35,3 +35,40 @@ An API for sensor data exchange
     + Body
 
             {"message":"Item created"}
+
+### Get sensor data list [GET]
+
++ Request
+    + Headers
+
+            Host:seed-it.eu:4000
+            User-Agent:curl/7.67.0
+            Accept:*/*
+            Content-Type:application/json
+
+    + Body
+
+
+
++ Response 200
+    + Headers
+
+            Date:Wed, 20 Nov 2019 18:52:05 GMT
+            Content-Encoding:gzip
+            Content-Type:application/json
+            Transfer-Encoding:chunked
+            Server:Jetty(9.4.z-SNAPSHOT)
+
+    + Body
+
+            [ {
+
+              "datetime" : "2019-11-14T10:11:59.378308",
+
+              "temperature" : 21.25,
+
+              "humidity" : 46.8,
+
+              "pressure" : 1013.111
+
+            } ]

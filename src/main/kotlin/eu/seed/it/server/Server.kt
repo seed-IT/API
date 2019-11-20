@@ -35,10 +35,9 @@ class Server(private val connection: Connection, private val database: Database)
             }
         })
 
-        listOf(
-                "/sensor" to postSensors
-        ).forEach { addPost(it.first, it.second) }
+        addPost("/sensor", postSensor)
 
+        addGet("/sensor", getSensor)
 
         notFound { _, _ ->
             message("404")
