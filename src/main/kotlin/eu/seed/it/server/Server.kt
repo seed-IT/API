@@ -41,7 +41,8 @@ class Server(private val connection: Connection, private val database: Database)
         ).forEach { addGet(it.first, it.second) }
 
         listOf(
-                "/seed" to postSeed
+                "/seed" to postSeed,
+                "/sensor" to postSensors
         ).forEach { addPost(it.first, it.second) }
 
         put("/seeds/:id") { req, res ->
@@ -56,7 +57,6 @@ class Server(private val connection: Connection, private val database: Database)
                     return@put message("OK")
                 }
             }
-
         }
 
         notFound { _, _ ->
