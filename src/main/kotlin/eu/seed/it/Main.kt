@@ -4,9 +4,13 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import eu.seed.it.database.Database
 import eu.seed.it.database.RealDatabase
+import eu.seed.it.database.Sensor
+import eu.seed.it.serialization.SensorDeserialiser
+import eu.seed.it.serialization.SensorSerializer
 import eu.seed.it.server.Server
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -22,6 +26,10 @@ var logger = LoggerFactory.getLogger("API")!!
 val mapper: ObjectMapper = jacksonObjectMapper().findAndRegisterModules().apply {
     setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
     enable(SerializationFeature.INDENT_OUTPUT)
+    val module = SimpleModule()
+    module.addSerializer(Sensor::class.java, SensorSerializer())
+    module.addDeserializer(Sensor::class.java, SensorDeserialiser())
+    registerModule(module)
 }
 
 fun main() {

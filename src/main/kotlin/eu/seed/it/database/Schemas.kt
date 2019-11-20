@@ -1,12 +1,12 @@
 package eu.seed.it.database
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import eu.seed.it.Either
 import me.liuwj.ktorm.dsl.QueryRowSet
-import me.liuwj.ktorm.schema.*
+import me.liuwj.ktorm.schema.BaseTable
+import me.liuwj.ktorm.schema.float
+import me.liuwj.ktorm.schema.int
+import me.liuwj.ktorm.schema.varchar
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import me.liuwj.ktorm.schema.datetime as ktormDatetime
 
 object Seeds : BaseTable<Seed>("GRAINE") {
     val id by int("ID_GRAINE").primaryKey()
@@ -49,40 +49,21 @@ data class Seed(
 }
 
 data class Sensor(
-        @JsonProperty("datetime")
-        val dateTime: LocalDateTime,
+        val datetime: LocalDateTime,
         val temperature: Float,
         val humidity: Float,
         val pressure: Float
 )
 
-data class SensorSerializable(
-        @JsonProperty("datetime")
-        val dateTime: String,
-        val temperature: Float,
-        val humidity: Float,
-        val pressure: Float
-) {
-    fun toSensor(): Either<DateTimeParseException, Sensor> {
-        return try {
-            val dateTime1 = LocalDateTime.parse(dateTime, DateTimeFormatter.ISO_DATE_TIME)
-            val sensor = Sensor(dateTime1, temperature, humidity, pressure)
-            Either.Right(sensor)
-        } catch (e: DateTimeParseException) {
-            Either.Left(e)
-        }
-    }
-}
-
 object Sensors : BaseTable<Sensor>("SENSOR") {
-    val dateTime by datetime("DATETIME")
+    val datetime by ktormDatetime("DATETIME")
     val temperature by float("TEMPERATURE")
     val humidity by float("HUMIDITY")
     val pressure by float("PRESSURE")
 
     override fun doCreateEntity(row: QueryRowSet, withReferences: Boolean): Sensor {
         return Sensor(
-                dateTime = row[dateTime]!!,
+                datetime = row[datetime]!!,
                 temperature = row[temperature]!!,
                 humidity = row[humidity]!!,
                 pressure = row[pressure]!!
