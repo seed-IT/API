@@ -8,10 +8,11 @@ import eu.seed.it.server.RequestError.Invalid
 import eu.seed.it.server.RequestsSuccess.Created
 import eu.seed.it.toObject
 import spark.Request
-import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.ConcurrentLinkedDeque
 
 
-val sensorData = CopyOnWriteArrayList<Sensor>()
+val capacity = 20
+val sensorData = ConcurrentLinkedDeque<Sensor>()
 
 val postSensor = object : Post {
     override fun invoke(req: Request): Either<RequestError, RequestsSuccess> {
@@ -21,6 +22,9 @@ val postSensor = object : Post {
         sensorEither as Right
         val sensor = sensorEither.value
 
+        if (sensorData.size == capacity) {
+            sensorData.removeFirst()
+        }
         sensorData.add(sensor)
         return Right(Created)
     }
@@ -28,7 +32,7 @@ val postSensor = object : Post {
 
 val getSensor = object : Get<List<Sensor>> {
     override fun invoke(req: Request): Either<RequestError, List<Sensor>> {
-        return Right(sensorData)
+        return Right(sensorData.toList())
     }
 
 }
