@@ -10,8 +10,12 @@ import eu.seed.it.server.RequestError.Invalid
 import eu.seed.it.server.RequestError.NotFound
 import eu.seed.it.server.RequestsSuccess.Created
 import eu.seed.it.server.RequestsSuccess.OK
+import eu.seed.it.server.services.sensorModule
 import eu.seed.it.toJson
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
+import org.kodein.di.generic.setBinding
 import org.slf4j.Logger
 import spark.Filter
 import spark.Response
@@ -28,6 +32,13 @@ class Server {
         logger.info("Connecting to database")
         database.connect()
 
+        val serverModules = Kodein {
+            bind() from setBinding<Get<out Any>>()
+            bind() from setBinding<Post>()
+
+            import(sensorModule)
+        }
+
         logger.info("Listening on $connection")
         port(connection.port)
 
@@ -40,9 +51,11 @@ class Server {
             }
         })
 
-        addPost("/sensor", postSensor)
+        val gets: Set<Get<out Any>> by serverModules.instance()
+        gets.forEach(::addGet)
 
-        addGet("/sensor", getSensor)
+        val posts: Set<Post> by serverModules.instance()
+        posts.forEach(::addPost)
 
         notFound { _, _ ->
             message("404")
@@ -66,8 +79,8 @@ class Server {
 }
 
 
-fun addGet(path: String, getHandler: Get<out Any>) {
-    get(path) { req, res ->
+fun addGet(getHandler: Get<out Any>) {
+    get(getHandler.path) { req, res ->
         when (val result = getHandler(req)) {
             is Right -> return@get result.value.toJson()
             is Left -> return@get handleErrors(res, result.value)
@@ -75,8 +88,8 @@ fun addGet(path: String, getHandler: Get<out Any>) {
     }
 }
 
-fun addPost(path: String, postHandler: Post) {
-    post(path) { req, res ->
+fun addPost(postHandler: Post) {
+    post(postHandler.path) { req, res ->
         when (val result = postHandler(req)) {
             is Right -> return@post handleSuccess(res, result.value)
             is Left -> return@post handleErrors(res, result.value)
