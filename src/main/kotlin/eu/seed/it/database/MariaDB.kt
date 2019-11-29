@@ -6,7 +6,7 @@ import org.kodein.di.generic.instance
 import me.liuwj.ktorm.database.Database as KtormDatabase
 
 
-class DatabaseImpl : Database {
+class MariaDB : Database {
     private val configuration: Configuration by kodein.instance()
     private val connection = configuration.databaseConnection()
 
@@ -24,6 +24,14 @@ class DatabaseImpl : Database {
     }
 
     override fun disconnect() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun sensorData(): List<Sensor> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun addSensorData(sensor: Sensor) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

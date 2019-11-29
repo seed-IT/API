@@ -3,7 +3,9 @@ package eu.seed.it.server.services
 import eu.seed.it.Either
 import eu.seed.it.Either.Left
 import eu.seed.it.Either.Right
+import eu.seed.it.database.Database
 import eu.seed.it.database.Sensor
+import eu.seed.it.kodein
 import eu.seed.it.server.Get
 import eu.seed.it.server.Post
 import eu.seed.it.server.RequestError
@@ -14,20 +16,16 @@ import eu.seed.it.toObject
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
+import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 import spark.Request
-import java.util.concurrent.ConcurrentLinkedDeque
 
 val sensorModule = Kodein.Module(name = "Sensor") {
-
-
     bind<Get<out Any>>().inSet() with singleton { GetSensor() }
     bind<Post>().inSet() with singleton { PostSensor() }
 }
 
-val capacity = 20
-val sensorData = ConcurrentLinkedDeque<Sensor>()
-
+private val database: Database by kodein.instance()
 
 class PostSensor : Post {
     override val path: String = "/sensor"
@@ -39,10 +37,7 @@ class PostSensor : Post {
         sensorEither as Right
         val sensor = sensorEither.value
 
-        if (sensorData.size == capacity) {
-            sensorData.removeFirst()
-        }
-        sensorData.add(sensor)
+        database.addSensorData(sensor)
         return Right(Created)
     }
 }
@@ -51,7 +46,7 @@ class GetSensor : Get<List<Sensor>> {
     override val path: String = "/sensor"
 
     override fun invoke(req: Request): Either<RequestError, List<Sensor>> {
-        return Right(sensorData.toList())
+        return Right(database.sensorData())
     }
 
 }

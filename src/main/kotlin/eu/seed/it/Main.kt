@@ -2,7 +2,7 @@ package eu.seed.it
 
 import eu.seed.it.configuration.Configuration
 import eu.seed.it.modules.configurationModule
-import eu.seed.it.modules.databaseModule
+import eu.seed.it.modules.inMemoryDBModule
 import eu.seed.it.modules.jacksonModule
 import eu.seed.it.modules.serverModule
 import eu.seed.it.server.Server
@@ -19,7 +19,10 @@ val kodein = Kodein {
 
     import(jacksonModule)
     import(configurationModule)
-    import(databaseModule)
+
+    //import(mariaDBModule)
+    import(inMemoryDBModule)
+
     import(serverModule)
 }
 

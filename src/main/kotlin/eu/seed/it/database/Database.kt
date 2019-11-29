@@ -6,4 +6,7 @@ interface Database {
 
     fun disconnect()
 
+    fun sensorData() : List<Sensor>
+
+    fun addSensorData(sensor: Sensor)
 }
