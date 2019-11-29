@@ -6,5 +6,4 @@ interface Database {
 
     fun disconnect()
 
-
 }

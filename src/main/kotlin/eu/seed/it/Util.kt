@@ -2,7 +2,9 @@ package eu.seed.it
 
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import org.kodein.di.generic.instance
 import java.io.IOException
 
 sealed class Either<out A, out B> {
@@ -10,6 +12,7 @@ sealed class Either<out A, out B> {
     class Right<B>(val value: B) : Either<Nothing, B>()
 }
 
+val mapper: ObjectMapper by kodein.instance()
 fun Any.toJson(): String = mapper.writeValueAsString(this)
 
 inline fun <reified T> String.toObject(): Either<JsonError, T> {
