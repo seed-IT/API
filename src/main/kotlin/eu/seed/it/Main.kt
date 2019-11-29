@@ -1,51 +1,36 @@
 package eu.seed.it
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect
-import com.fasterxml.jackson.annotation.PropertyAccessor
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import eu.seed.it.database.Database
-import eu.seed.it.database.RealDatabase
-import eu.seed.it.database.Sensor
-import eu.seed.it.serialization.SensorDeserialiser
-import eu.seed.it.serialization.SensorSerializer
+import eu.seed.it.configuration.Configuration
+import eu.seed.it.modules.configurationModule
+import eu.seed.it.modules.databaseModule
+import eu.seed.it.modules.jacksonModule
+import eu.seed.it.modules.serverModule
 import eu.seed.it.server.Server
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.singleton
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.File
 
 
-lateinit var serverConnection: Connection
-lateinit var databaseConnection: DatabaseConnection
-lateinit var database: Database
-lateinit var server: Server
+val kodein = Kodein {
+    bind<Logger>() with singleton { LoggerFactory.getLogger("API")!! }
 
-var logger = LoggerFactory.getLogger("API")!!
-
-val mapper: ObjectMapper = jacksonObjectMapper().findAndRegisterModules().apply {
-    setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-    enable(SerializationFeature.INDENT_OUTPUT)
-    val module = SimpleModule()
-    module.addSerializer(Sensor::class.java, SensorSerializer())
-    module.addDeserializer(Sensor::class.java, SensorDeserialiser())
-    registerModule(module)
+    import(jacksonModule)
+    import(configurationModule)
+    import(databaseModule)
+    import(serverModule)
 }
 
+
 fun main() {
+    val logger: Logger by kodein.instance()
     logger.info("Starting API service")
 
-    // TODO: find a better path
-    val cwd = System.getProperty("user.dir")
-    val configFile = File(cwd, "config.toml")
-    Configuration.setConfigFile(configFile)
-    Configuration.loadConfig()
+    val configuration: Configuration by kodein.instance()
+    configuration.load()
 
-    logger.info("Using server connection $serverConnection")
-    logger.info("Using database connection $databaseConnection")
-
-    database = RealDatabase(databaseConnection)
-
-    server = Server(serverConnection, database)
+    val server: Server by kodein.instance()
     server.serve()
 }

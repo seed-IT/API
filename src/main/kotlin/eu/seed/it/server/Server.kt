@@ -1,30 +1,35 @@
 package eu.seed.it.server
 
-import eu.seed.it.Connection
+import com.fasterxml.jackson.databind.ObjectMapper
 import eu.seed.it.Either.Left
 import eu.seed.it.Either.Right
+import eu.seed.it.configuration.Configuration
 import eu.seed.it.database.Database
-import eu.seed.it.mapper
+import eu.seed.it.kodein
 import eu.seed.it.server.RequestError.Invalid
 import eu.seed.it.server.RequestError.NotFound
 import eu.seed.it.server.RequestsSuccess.Created
 import eu.seed.it.server.RequestsSuccess.OK
 import eu.seed.it.toJson
-import org.slf4j.LoggerFactory
+import org.kodein.di.generic.instance
+import org.slf4j.Logger
 import spark.Filter
 import spark.Response
 import spark.Spark.*
 
 
-class Server(private val connection: Connection, private val database: Database) {
-    private val logger = LoggerFactory.getLogger("Server")
+class Server {
+    private val logger: Logger by kodein.instance()
+    private val configuration: Configuration by kodein.instance()
+    private val connection = configuration.serverConnection()
+    private val database: Database by kodein.instance()
 
     fun serve() {
         logger.info("Connecting to database")
         database.connect()
 
         logger.info("Listening on $connection")
-        port(connection.port.value)
+        port(connection.port)
 
         before(Filter { req, res ->
             val url = req.url()
@@ -101,7 +106,7 @@ fun handleSuccess(res: Response, success: RequestsSuccess) = when (success) {
     }
 }
 
-
+private val mapper: ObjectMapper by kodein.instance()
 fun message(message: String): String {
     val objectNode = mapper.createObjectNode()
     objectNode.put("message", message)
