@@ -35,5 +35,5 @@ fun main() {
     configuration.load()
 
     val server: Server by kodein.instance()
-    server.serve()
+    server.run()
 }
