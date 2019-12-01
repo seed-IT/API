@@ -13,4 +13,5 @@ val serverKodein = Kodein {
     import(redirectionModule)
     import(sensorModule)
     import(statusModule)
+    import(userModule)
 }
