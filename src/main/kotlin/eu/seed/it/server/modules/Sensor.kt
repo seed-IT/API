@@ -1,6 +1,8 @@
 package eu.seed.it.server.modules
 
 import eu.seed.it.Either
+import eu.seed.it.Either.Left
+import eu.seed.it.Either.Right
 import eu.seed.it.database.Database
 import eu.seed.it.database.Sensor
 import eu.seed.it.kodein
@@ -13,7 +15,6 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
-import org.slf4j.Logger
 import spark.kotlin.get
 import spark.kotlin.post
 
@@ -29,12 +30,12 @@ private class SensorModule : ServerModule {
         post("/sensor") {
             val sensorEither = request.body().toObject<Sensor>()
 
-            if (sensorEither is Either.Left) {
+            if (sensorEither is Left) {
                 response.status(400)
                 return@post message("Bad Request")
             }
 
-            sensorEither as Either.Right
+            sensorEither as Right
             val sensor = sensorEither.value
 
             database.addSensorData(sensor)

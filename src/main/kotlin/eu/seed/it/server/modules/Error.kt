@@ -1,14 +1,11 @@
 package eu.seed.it.server.modules
 
-import eu.seed.it.kodein
 import eu.seed.it.server.ServerModule
 import eu.seed.it.server.message
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
-import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
-import org.slf4j.Logger
 import spark.kotlin.internalServerError
 import spark.kotlin.notFound
 
