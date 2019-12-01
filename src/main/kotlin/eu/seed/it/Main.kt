@@ -6,9 +6,12 @@ import eu.seed.it.modules.inMemoryDBModule
 import eu.seed.it.modules.jacksonModule
 import eu.seed.it.modules.serverModule
 import eu.seed.it.server.Server
+import eu.seed.it.server.ServerModule
+import eu.seed.it.server.modules.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
+import org.kodein.di.generic.setBinding
 import org.kodein.di.generic.singleton
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,6 +27,14 @@ val kodein = Kodein {
     import(inMemoryDBModule)
 
     import(serverModule)
+
+    bind() from setBinding<ServerModule>()
+    import(errorModule)
+    import(headerModule)
+    import(loggingModule)
+    import(redirectionModule)
+    import(sensorModule)
+    import(statusModule)
 }
 
 
