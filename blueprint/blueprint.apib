@@ -4,7 +4,43 @@ HOST: seed-it.eu:4000
 # API Seeds
 An API for sensor data exchange
 
-# Groups Sensor
+# Group User
+
+## User [/sensor/{email}]
+
++ Parameters
+
+    + email: `toto@mail.com` (required, string) - The user email
+
+### Get user id [GET]
+
++ Request
+    + Headers
+
+            Host:seed-it.eu:4000
+            User-Agent:curl/7.67.0
+            Accept:*/*
+            Content-Type:application/json
+
+    + Body
+
+
++ Response 200
+    + Headers
+
+            Date:Wed, 01 Dec 2019 18:46:05 GMT
+            Content-Encoding:gzip
+            Content-Type:application/json
+            Transfer-Encoding:chunked
+            Server:Jetty(9.4.z-SNAPSHOT)
+
+    + Body
+
+            {"id": 4}
+
+
+
+# Group Sensor
 
 ## Sensor [/sensor/{id}]
 
