@@ -15,8 +15,13 @@ class LoggingModule : ServerModule {
 
     override fun run() {
         after {
-            val log = "${request.requestMethod()} ${request.url()} ${request.body()} -> ${status()} ${response.body()}"
-            logger.info(log)
+            if (logger.isDebugEnabled) {
+                val msg = "${request.requestMethod()} ${request.url()} ${request.body()} -> ${status()} ${response.body()}"
+                logger.debug(msg)
+            } else {
+                val msg = "${request.requestMethod()} ${request.url()} -> ${status()}"
+                logger.info(msg)
+            }
         }
     }
 }
