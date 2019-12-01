@@ -2,7 +2,7 @@ package eu.seed.it
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import eu.seed.it.database.Sensor
+import eu.seed.it.database.schemas.Sensor
 import eu.seed.it.modules.jacksonModule
 import org.junit.jupiter.api.Test
 import org.kodein.di.Kodein

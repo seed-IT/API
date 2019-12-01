@@ -1,7 +1,7 @@
 package eu.seed.it.server.modules
 
 import eu.seed.it.database.Database
-import eu.seed.it.database.Sensor
+import eu.seed.it.database.schemas.Sensor
 import eu.seed.it.kodein
 import eu.seed.it.server.ServerModule
 import eu.seed.it.utils.Either.Left
@@ -28,7 +28,7 @@ private class SensorModule : ServerModule {
 
         get("/sensor/:id") {
             val id = request.params(":id")
-            val idInt = id.toIntOrNull()
+            val idInt = id.toLongOrNull()
             if (idInt == null) {
                 response.status(400)
                 return@get message("Bad Request")
@@ -57,7 +57,7 @@ private class SensorModule : ServerModule {
 
         post("/sensor/:id") {
             val id = request.params(":id")
-            val idInt = id.toIntOrNull()
+            val idInt = id.toLongOrNull()
             if (idInt == null) {
                 response.status(400)
                 return@post message("Bad Request")

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import eu.seed.it.database.Sensor
+import eu.seed.it.database.schemas.Sensor
 import eu.seed.it.serialization.SensorDeserializer
 import eu.seed.it.serialization.SensorSerializer
 import org.kodein.di.Kodein

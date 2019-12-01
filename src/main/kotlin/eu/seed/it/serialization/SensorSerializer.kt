@@ -3,7 +3,7 @@ package eu.seed.it.serialization
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.*
-import eu.seed.it.database.Sensor
+import eu.seed.it.database.schemas.Sensor
 import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
