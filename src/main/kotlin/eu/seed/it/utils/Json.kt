@@ -5,13 +5,11 @@ import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import eu.seed.it.kodein
+import eu.seed.it.utils.Either.Left
+import eu.seed.it.utils.Either.Right
 import org.kodein.di.generic.instance
 import java.io.IOException
 
-sealed class Either<out A, out B> {
-    class Left<A>(val value: A) : Either<A, Nothing>()
-    class Right<B>(val value: B) : Either<Nothing, B>()
-}
 
 val mapper: ObjectMapper by kodein.instance()
 fun Any.toJson(): String = mapper.writeValueAsString(this)
@@ -25,13 +23,13 @@ fun message(message: String): String {
 inline fun <reified T> String.toObject(): Either<JsonError, T> {
     return try {
         val value: T = mapper.readValue(this)
-        Either.Right(value)
+        Right(value)
     } catch (e: IOException) {
-        Either.Left(JsonError.IOException)
+        Left(JsonError.IOException)
     } catch (e: JsonParseException) {
-        Either.Left(JsonError.JsonParseException)
+        Left(JsonError.JsonParseException)
     } catch (e: JsonMappingException) {
-        Either.Left(JsonError.JsonMappingException)
+        Left(JsonError.JsonMappingException)
     }
 }
 
