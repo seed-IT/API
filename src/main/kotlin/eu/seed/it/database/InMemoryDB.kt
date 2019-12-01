@@ -1,5 +1,7 @@
 package eu.seed.it.database
 
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
 
 class InMemoryDB : Database {
@@ -11,17 +13,23 @@ class InMemoryDB : Database {
         // Nothing to do
     }
 
-    private val sensorDataDeque = ConcurrentLinkedDeque<Sensor>()
+    private val multimap: MutableMap<Int, Deque<Sensor>> = ConcurrentHashMap()
     private val capacity = 20
 
-    override fun sensorData(): List<Sensor> {
-        return sensorDataDeque.toList()
+    override fun sensorData(id: Int): List<Sensor> {
+        return multimap[id]?.toList() ?: emptyList()
     }
 
-    override fun addSensorData(sensor: Sensor) {
-        if (sensorDataDeque.size == capacity) {
-            sensorDataDeque.removeFirst()
+    override fun addSensorData(sensor: Sensor, id: Int) {
+        var current = multimap[id]
+        if (current == null) {
+            current = ConcurrentLinkedDeque()
+            multimap[id] = current
         }
-        sensorDataDeque.add(sensor)
+
+        if (current.size == capacity) {
+            current.removeFirst()
+        }
+        current.add(sensor)
     }
 }

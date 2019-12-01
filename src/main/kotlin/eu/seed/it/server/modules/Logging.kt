@@ -16,7 +16,18 @@ class LoggingModule : ServerModule {
     override fun run() {
         after {
             if (logger.isDebugEnabled) {
-                val msg = "${request.requestMethod()} ${request.url()} ${request.body()} -> ${status()} ${response.body()}"
+                val msg = """
+                    request:
+                    ${request.requestMethod()} ${request.url()}
+                    attributes: ${request.attributes()}
+                    queryMap: ${request.queryMap().toMap()}
+                    queryParams: ${request.queryParams()}
+                    body: ${request.body()}
+                    
+                    response:
+                    ${status()}
+                    body: ${response.body()}
+                """.trimIndent()
                 logger.debug(msg)
             } else {
                 val msg = "${request.requestMethod()} ${request.url()} -> ${status()}"

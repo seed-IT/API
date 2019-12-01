@@ -27,11 +27,11 @@ class MariaDB : Database {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun sensorData(): List<Sensor> {
+    override fun sensorData(id: Int): List<Sensor> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun addSensorData(sensor: Sensor) {
+    override fun addSensorData(sensor: Sensor, id: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
