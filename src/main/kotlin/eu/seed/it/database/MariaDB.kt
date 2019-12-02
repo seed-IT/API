@@ -9,6 +9,7 @@ import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insert
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.where
+import me.liuwj.ktorm.logging.Slf4jLoggerAdapter
 import org.kodein.di.generic.instance
 import org.slf4j.Logger
 import kotlin.math.min
@@ -27,7 +28,8 @@ class MariaDB : Database {
                 url = url,
                 driver = "org.mariadb.jdbc.Driver",
                 user = connection.user,
-                password = connection.password
+                password = connection.password,
+                logger = Slf4jLoggerAdapter(logger)
         )
 
     }
