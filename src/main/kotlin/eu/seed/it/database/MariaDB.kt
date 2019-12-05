@@ -47,8 +47,9 @@ class MariaDB : Database {
                     )
                 }
 
-        val max = min(results.size, 20)
-        return results.subList(0, max)
+        val start = results.size - min(20, results.size)
+        val end = results.size
+        return results.subList(start, end)
     }
 
     override fun addSensorData(sensor: Sensor, id: Long) {
